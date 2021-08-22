@@ -7,13 +7,15 @@ function init() {
 }
 
 function onReady() {
-  console.log("onReady");
+  const window = new BrowserWindow();
+  window.loadFile("index.html");
 }
 
 function onActivate() {
-  const window = new BrowserWindow();
-  window.loadURL(`file://${__dirname}/index.html`);
-  window.show();
+  BrowserWindow.getAllWindows().forEach((window) => {
+    window.show();
+    window.webContents.openDevTools();
+  });
 }
 
 function onWinodwAllClosed() {
