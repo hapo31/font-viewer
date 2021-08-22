@@ -9,12 +9,12 @@ function init() {
 function onReady() {
   const window = new BrowserWindow();
   window.loadFile("index.html");
+  window.webContents.openDevTools();
 }
 
 function onActivate() {
   BrowserWindow.getAllWindows().forEach((window) => {
     window.show();
-    window.webContents.openDevTools();
   });
 }
 
