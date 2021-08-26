@@ -74,4 +74,31 @@ var renderer = {
   ],
 };
 
-module.exports = [main, renderer];
+var preload = {
+  mode: isDev ? "development" : "production",
+  target: "electron-renderer",
+  entry: path.resolve(__dirname, "src", "renderer", "preload"),
+  devtool: isDev ? "inline-source-map" : false,
+  output: {
+    filename: "preload.js",
+    path: path.resolve(outputPath, "scripts"),
+  },
+  resolve: {
+    extensions: [".json", ".js", ".jsx", ".css", ".ts", ".tsx"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: ["ts-loader"],
+        include: [
+          path.resolve(__dirname, "src", "renderer"),
+          path.resolve(__dirname, "node_modules"),
+        ],
+      },
+    ],
+  },
+  plugins: [],
+};
+
+module.exports = [main, renderer, preload];
