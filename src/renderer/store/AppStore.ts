@@ -14,7 +14,7 @@ export type AppState = typeof initialState;
 export const fetchFileList = createAsyncThunk(
   "app/fetchFileList",
   async (folderPath: string) => {
-    const files = await window.fetchFileList(folderPath);
+    const files = await window.api.fetchFileList(folderPath);
     return files;
   }
 );
