@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { DragEvent } from "react";
+import { ChangeEvent, DragEvent, useState } from "react";
 import { fetchFileList, useAppState } from "../../store/AppStore";
 import Container from "../../Styled/Container";
 import { useDispatch } from "react-redux";
+import InputDirectory from "../../common/InputDirectory";
+import getFolderPathFromFilePath from "../../lib/getFolderPathFromFilePath";
 
 const FontExplorer = () => {
   const { isFolderOpen, filePaths } = useAppState((state) => ({
@@ -11,6 +13,17 @@ const FontExplorer = () => {
   }));
 
   const dispatch = useDispatch();
+
+  const [isDrag, setIsDrag] = useState(false);
+
+  const onFileInput = (files: FileList) => {
+    const file = files.item(0);
+    if (file == null) {
+      return;
+    }
+    const folderPath = getFolderPathFromFilePath(file.path);
+    dispatch(fetchFileList(folderPath));
+  };
 
   return (
     <Container>
@@ -23,13 +36,26 @@ const FontExplorer = () => {
       ) : (
         <DropAreaContainer>
           <DropInput
-            onDrop={(e: DragEvent<HTMLInputElement>) => {
-              const { files } = e.dataTransfer;
-              const file = files.item(0);
-              if (file == null) {
+            className={isDrag ? `drag-over` : ""}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDrag(true);
+            }}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              console.log({ e });
+              if (!e.target.files) {
                 return;
               }
-              dispatch(fetchFileList(file.path));
+              onFileInput(e.target.files);
+            }}
+            onDrop={(e: DragEvent<HTMLInputElement>) => {
+              console.log({ e });
+              e.preventDefault();
+              const { files } = e.dataTransfer;
+              onFileInput(files);
+            }}
+            onDragLeave={() => {
+              setIsDrag(false);
             }}
           />
         </DropAreaContainer>
@@ -47,12 +73,14 @@ const DropAreaContainer = styled.div`
   width: 100%;
   height: 100%;
   margin: 50px 50px;
+  border: solid 2px black;
 `;
 
-const DropInput = styled.input`
+const DropInput = styled(InputDirectory)`
   width: 100%;
+  min-width: 120px;
   height: 100%;
-  :hover {
+  &drag-over {
     background-color: red;
   }
 `;
