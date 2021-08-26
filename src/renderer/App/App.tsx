@@ -1,11 +1,12 @@
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { applyMiddleware, createStore } from "redux";
 import appReducer from "../store/AppStore";
 import styled from "styled-components";
 import Container from "../Styled/Container";
 import FontExplorer from "./FontExplorer/FontExplorer";
+import thunk from "redux-thunk";
 
-const store = createStore(appReducer);
+const store = createStore(appReducer, applyMiddleware(thunk));
 
 const App = () => {
   return (
