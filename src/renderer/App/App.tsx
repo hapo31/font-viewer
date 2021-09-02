@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Container from "../Styled/Container";
 import FontExplorer from "./FontExplorer/FontExplorer";
 import thunk from "redux-thunk";
+import Preview from "./Preview/Preview";
 
 const store = createStore(appReducer, applyMiddleware(thunk));
 
@@ -15,7 +16,9 @@ const App = () => {
         <ExplorerGrid>
           <FontExplorer />
         </ExplorerGrid>
-        <PreviewGrid></PreviewGrid>
+        <PreviewGrid>
+          <Preview />
+        </PreviewGrid>
       </Container>
     </Provider>
   );
