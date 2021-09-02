@@ -24,7 +24,7 @@ const slice = createSlice({
   initialState,
   reducers: {
     changeFont: (state, action: PayloadAction<{ filePath: string }>) => {
-      state.selectedFontFilePath = action.payload.filePath;
+      state.selectedFontFilePath = action.payload.filePath.replace(/\\/g, "/");
     },
 
     setText: (state, action: PayloadAction<{ text: string }>) => {
@@ -45,6 +45,6 @@ const AppReducer = slice.reducer;
 
 export default AppReducer;
 
-export function useAppState<T>(selector: (state: AppState) => T) {
-  return useSelector(selector);
+export function useAppState() {
+  return useSelector((rootState) => rootState) as AppState;
 }
