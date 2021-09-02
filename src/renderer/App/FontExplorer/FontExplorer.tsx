@@ -1,16 +1,13 @@
 import styled from "styled-components";
 import { ChangeEvent, DragEvent, useState } from "react";
-import { fetchFileList, useAppState } from "../../store/AppStore";
+import { changeFont, fetchFileList, useAppState } from "../../store/AppStore";
 import Container from "../../Styled/Container";
 import { useDispatch } from "react-redux";
 import InputDirectory from "../../common/InputDirectory";
 import getFolderPathFromFilePath from "../../lib/getFolderPathFromFilePath";
 
 const FontExplorer = () => {
-  const { isFolderOpen, filePaths } = useAppState((state) => ({
-    isFolderOpen: state.isFolderOpen,
-    filePaths: state.filePaths,
-  }));
+  const { isFolderOpen, filePaths } = useAppState();
 
   const dispatch = useDispatch();
 
@@ -28,11 +25,18 @@ const FontExplorer = () => {
   return (
     <Container>
       {isFolderOpen ? (
-        <li>
+        <FontList>
           {filePaths.map((file, i) => (
-            <ul key={`${i}-${file}`}>{file}</ul>
+            <FontListItem
+              onClick={() => {
+                dispatch(changeFont({ filePath: file }));
+              }}
+              key={`${i}-${file}`}
+            >
+              {file}
+            </FontListItem>
           ))}
-        </li>
+        </FontList>
       ) : (
         <DropAreaContainer>
           <DropInput
@@ -82,5 +86,17 @@ const DropInput = styled(InputDirectory)`
   height: 100%;
   &drag-over {
     background-color: red;
+  }
+`;
+
+const FontList = styled.ul`
+  overflow-y: scroll;
+  list-style: none;
+  height: 100vh;
+`;
+
+const FontListItem = styled.li`
+  :hover {
+    background-color: #999;
   }
 `;
