@@ -1,13 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import fs from "fs/promises";
-import filetype from "file-type";
+import mime from "mime";
 import path from "path";
-
-const acceptMime = [
-  "application/font-woff",
-  "application/x-font-ttf",
-  "application/x-font-otf",
-];
 
 function init() {
   app.on("ready", onReady);
@@ -15,12 +9,12 @@ function init() {
   app.on("window-all-closed", onWinodwAllClosed);
   ipcMain.handle("fetchFileList", async (event, folderPath: string) => {
     const files = await fs.readdir(folderPath);
-    const results = await Promise.all(
-      files.map((file) => filetype.fromFile(file))
+    const results = files.map((file) =>
+      mime.getType(path.join(folderPath, file))
     );
     return results
-      .filter((res) => res != null && acceptMime.includes(res.mime))
-      .map((_, i) => files[i]);
+      .filter((res) => res != null && res.includes("font"))
+      .map((_, i) => path.join(folderPath, files[i]));
   });
 }
 
